@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import FloatingLineOfficial from "@/components/layout/FloatingLineOfficial";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
@@ -42,6 +43,8 @@ export default function RootLayout({
         </main>
         {/* 整站頁尾 */}
         <Footer />
+        {/* 右下角浮動 LINE 官方帳號 */}
+        <FloatingLineOfficial />
       </body>
     </html>
   );

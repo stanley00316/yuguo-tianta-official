@@ -1,5 +1,14 @@
 # CHANGELOG - 瑀過天泰關懷協會官方網站
 
+## [1.6.5] - 2026-04-30
+
+### 全站浮動 LINE
+
+- 新增 **`components/layout/FloatingLineOfficial.tsx`**：右下角固定圓形按鈕（**safe-area**、**z-40** 低於頂欄），連至 **`SITE_LINE_OFFICIAL_URL`**，含 **`aria-label`**／**`title`**。
+- **`app/layout.tsx`**：於 **Footer** 之後掛載，全頁可見。
+
+---
+
 ## [1.6.4] - 2026-04-30
 
 ### 頁尾版面
