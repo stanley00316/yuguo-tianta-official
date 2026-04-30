@@ -98,7 +98,8 @@ export default function HeroBanner() {
                 src="/images/logo.jpg"
                 alt="瑀過天泰關懷協會"
                 fill
-                className="object-contain p-4"
+                className="object-cover"
+                sizes="(max-width: 640px) 224px, 288px"
                 priority
               />
             </div>

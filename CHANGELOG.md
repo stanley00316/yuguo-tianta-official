@@ -2,6 +2,24 @@
 
 # CHANGELOG - 瑀過天泰關懷協會官方網站
 
+## [1.6.8] - 2026-04-30
+
+### 後台導覽字級
+
+- **`components/admin/AdminSessionActions.tsx`**：後台頂部「活動剪影／公益商品／最新消息／留言收件」捷徑字級由 **`text-xs`**（約 12px）改為 **`text-lg`**（約 18px），約 **+50%**，較易閱讀。
+
+---
+
+# CHANGELOG - 瑀過天泰關懷協會官方網站
+
+## [1.6.8] - 2026-04-30
+
+### 首頁視覺
+
+- **`components/home/HeroBanner.tsx`**：首屏右側 Logo 圓框改為 **`object-cover`**、取消 **padding**，圖片滿版填滿圓形；**`sizes`** 改與實際顯示寬度一致以利 `next/image` 解析度。
+
+---
+
 ## [1.6.7] - 2026-04-30
 
 ### 首頁文案
