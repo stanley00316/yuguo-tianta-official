@@ -1,6 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import {
+  SITE_MAIN_PHONE_HREF,
+  SITE_MAIN_PHONE_LABEL,
+  SITE_SERVICE_LOCATIONS,
+} from '@/lib/site-contact';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -86,19 +92,36 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm text-gray-400">
               <li className="flex items-start gap-2.5">
-                {/* 地址圖示 */}
+                {/* 地點圖示：服務據點（含 Google 地圖連結） */}
                 <svg className="w-4 h-4 mt-1 flex-shrink-0 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                <span>高雄市<br />（詳細地址請來電洽詢）</span>
+                <div className="space-y-2">
+                  <div className="text-white/90 font-medium text-xs">服務據點</div>
+                  {SITE_SERVICE_LOCATIONS.map((loc) => (
+                    <div key={loc.area} className="leading-snug">
+                      <span className="text-gray-500">{loc.area}：</span>{' '}
+                      <a
+                        href={loc.mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-400 hover:text-orange-400 transition-colors underline-offset-2 hover:underline"
+                      >
+                        {loc.address}
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </li>
               <li className="flex items-center gap-2.5">
                 {/* 電話圖示 */}
                 <svg className="w-4 h-4 flex-shrink-0 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
-                <a href="tel:" className="hover:text-orange-400 transition-colors">請洽粉絲頁</a>
+                <a href={SITE_MAIN_PHONE_HREF} className="hover:text-orange-400 transition-colors">
+                  {SITE_MAIN_PHONE_LABEL}
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 {/* Facebook 圖示 */}
