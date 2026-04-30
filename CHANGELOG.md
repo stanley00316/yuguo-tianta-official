@@ -1,5 +1,16 @@
 # CHANGELOG - 瑀過天泰關懷協會官方網站
 
+## [1.7.0] - 2026-04-30
+
+### 首頁 Hero LOGO（管理員）
+
+- **`lib/hero-logo-settings.ts`**：自訂內容鍵名與 **`frameScale`**（**0.75～1.4**）驗證、**`HERO_LOGO_SYNC_EVENT`** 同頁同步。
+- **`components/home/HeroLogoEditorModal.tsx`**：浮層表單—上傳圖（**`compressImageToJpegDataUrl`**）、**恢復預設圖檔**、圓框比例滑桿、儲存至 **localStorage**（與公益商品後台相同：同一瀏覽器可見）。
+- **`components/home/HeroBanner.tsx`**：改為 **Client**；已登入管理員可**點擊**圓形 LOGO 開啟編輯；圓框尺寸以 **`.hero-logo-frame`** 與 **CSS 變數**套用 **scale**；**data URL** 時改用 **`<img>`**，靜態檔仍用 **`next/image`**。
+- **`app/globals.css`**：新增 **`.hero-logo-frame`**（手機／**sm**／**lg** 三斷點基準 rem × scale）。
+
+---
+
 ## [1.6.11] - 2026-04-30
 
 ### 首頁視覺

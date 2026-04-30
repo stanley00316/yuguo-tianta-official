@@ -259,6 +259,26 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* 首頁 Hero：圓框寬高依 CSS 變數縮放（管理員可調比例） */
+.hero-logo-frame {
+  width: calc(var(--hero-logo-base-mobile, 16rem) * var(--hero-logo-scale, 1));
+  height: calc(var(--hero-logo-base-mobile, 16rem) * var(--hero-logo-scale, 1));
+}
+
+@media (min-width: 640px) {
+  .hero-logo-frame {
+    width: calc(var(--hero-logo-base-sm, 20rem) * var(--hero-logo-scale, 1));
+    height: calc(var(--hero-logo-base-sm, 20rem) * var(--hero-logo-scale, 1));
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-logo-frame {
+    width: calc(var(--hero-logo-base-lg, 24rem) * var(--hero-logo-scale, 1));
+    height: calc(var(--hero-logo-base-lg, 24rem) * var(--hero-logo-scale, 1));
+  }
+}
+
 /* 活動剪影頁：依螢幕寬度自動調整瀑布流欄數，手機一眼一欄較易閱讀 */
 .gallery-masonry {
   column-count: 1;
