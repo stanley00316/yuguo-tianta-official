@@ -65,7 +65,7 @@ export default function HeroBanner() {
 
             {/* 副標語 */}
             <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-              試衣間身心障礙工坊，透過職業訓練與公益商品，
+              透過職業訓練與公益商品，
               為每一位夥伴創造有尊嚴的工作機會。
             </p>
 
