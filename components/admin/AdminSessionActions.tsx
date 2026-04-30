@@ -6,7 +6,7 @@ export default function AdminSessionActions() {
   return (
     <div className="flex flex-col items-center gap-3 w-full max-w-2xl mx-auto">
       <nav
-        className="flex flex-wrap gap-x-3 gap-y-1.5 justify-center text-xs text-gray-600"
+        className="flex flex-wrap gap-x-3 gap-y-1.5 justify-center text-lg text-gray-600"
         aria-label="管理頁面切換"
       >
         <Link href="/gallery/manage" className="underline hover:text-gray-900">
