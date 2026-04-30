@@ -25,7 +25,7 @@ export default function HeroBanner() {
       />
 
       <div className="container-site relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 py-12 sm:py-16 lg:py-20">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-6 py-12 sm:py-16 lg:py-20">
 
           {/* 左側文字區 */}
           <div className="flex-1 max-w-xl text-center lg:text-left">
@@ -87,11 +87,11 @@ export default function HeroBanner() {
           <div className="flex-shrink-0 relative">
             {/* 彩虹光暈效果 */}
             <div
-              className="absolute inset-0 rounded-full blur-3xl opacity-30 scale-110"
+              className="absolute inset-0 rounded-full blur-3xl opacity-30 scale-[1.18]"
               style={{ background: 'conic-gradient(from 0deg, #E84040, #F5A623, #5CB85C, #4A90D9, #E84040)' }}
             />
             <div
-              className="relative w-56 h-56 sm:w-72 sm:h-72 rounded-full overflow-hidden border-4 border-white"
+              className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-white"
               style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}
             >
               <Image
@@ -99,7 +99,7 @@ export default function HeroBanner() {
                 alt="瑀過天泰關懷協會"
                 fill
                 className="object-fill"
-                sizes="(max-width: 640px) 224px, 288px"
+                sizes="(max-width: 639px) 256px, (max-width: 1023px) 320px, 384px"
                 priority
               />
             </div>
