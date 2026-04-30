@@ -1,4 +1,4 @@
-// 官網對外聯絡：服務據點地址與總機（Footer、聯絡我們等區塊共用，避免各處寫死不一致）
+// 官網對外聯絡：LINE／服務據點／總機等（Footer、聯絡我們共用，避免各處寫死不一致）
 
 export type SiteServiceLocation = {
   /** 據點區名（例：鼓山） */
@@ -27,3 +27,9 @@ export const SITE_MAIN_PHONE_LABEL = '07-9623203';
 
 /** 點擊撥號用（台灣市話去首碼 0 加國碼 886） */
 export const SITE_MAIN_PHONE_HREF = 'tel:+88679623203';
+
+/** LINE 官方帳號 Basic ID（畫面上顯示） */
+export const SITE_LINE_OFFICIAL_ID = '@502zrgxr';
+
+/** LINE 官方帳號（加好友／開啟聊天，標準網址格式） */
+export const SITE_LINE_OFFICIAL_URL = 'https://line.me/R/ti/p/@502zrgxr';

@@ -1,5 +1,15 @@
 # CHANGELOG - 瑀過天泰關懷協會官方網站
 
+## [1.6.3] - 2026-04-30
+
+### 聯絡渠道（LINE 官方）
+
+- **`lib/site-contact.ts`**：新增 **`SITE_LINE_OFFICIAL_ID`**（`@502zrgxr`）與 **`SITE_LINE_OFFICIAL_URL`**（`https://line.me/R/ti/p/@502zrgxr`）。
+- **`components/layout/Footer.tsx`**：Logo 區與聯絡資訊欄新增 **LINE 官方帳號** 連結。
+- **`app/contact/ContactClient.tsx`**：聯絡資訊左欄新增 **LINE 官方帳號** 卡片（排在 Facebook 之後）。
+
+---
+
 ## [1.6.2] - 2026-04-30
 
 ### 聯絡資訊（服務據點與電話）
