@@ -25,7 +25,7 @@ export default function HeroBanner() {
       />
 
       <div className="container-site relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-6 py-12 sm:py-16 lg:py-20">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-4 py-12 sm:py-16 lg:py-20">
 
           {/* 左側文字區 */}
           <div className="flex-1 max-w-xl text-center lg:text-left">
@@ -83,8 +83,8 @@ export default function HeroBanner() {
             </div>
           </div>
 
-          {/* 右側 Logo 大圖 */}
-          <div className="flex-shrink-0 relative">
+          {/* 右側 Logo：lg 時負 margin 抵銷 container 右 padding，圓框貼近版面外框（尊重 safe-area） */}
+          <div className="flex-shrink-0 relative lg:-mr-[max(2.5rem,env(safe-area-inset-right,0px))]">
             {/* 彩虹光暈效果 */}
             <div
               className="absolute inset-0 rounded-full blur-3xl opacity-30 scale-[1.18]"

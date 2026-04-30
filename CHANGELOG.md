@@ -1,5 +1,13 @@
 # CHANGELOG - 瑀過天泰關懷協會官方網站
 
+## [1.6.11] - 2026-04-30
+
+### 首頁視覺
+
+- **`components/home/HeroBanner.tsx`**：**`lg`** 起 Logo 外層 **`lg:-mr-[max(2.5rem,env(safe-area-inset-right,0px))]`** 抵銷 **`container-site`** 右 padding，圓框貼近版面右側外框並保留 **safe-area**；**`lg:gap-4`** 略收與左欄距離。
+
+---
+
 ## [1.6.10] - 2026-04-30
 
 ### 首頁視覺
