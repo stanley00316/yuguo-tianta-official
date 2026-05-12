@@ -47,7 +47,9 @@ export default function NewsClient({ items: initialItems }: NewsClientProps) {
             最新消息
           </h1>
           <p className="text-gray-500 text-base max-w-lg mx-auto">
-            掌握瑀過天泰的最新活動與工坊動態
+            看見瑀過天秦的活動與工坊動態，
+            <br />
+            串連每一步持續推進的努力與成果。
           </p>
           <p className="mt-4">
             {isAdmin ? (

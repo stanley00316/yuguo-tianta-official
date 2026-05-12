@@ -6,18 +6,32 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { safeRedirectPathForLogin } from '@/lib/admin-login-redirect';
 
+type LoginFormProps = {
+  blockedReason?: 'secret' | 'credential' | null;
+};
+
+function blockedMessage(kind: 'secret' | 'credential'): string {
+  if (kind === 'secret')
+    return '伺服器尚未設定管理登入（環境變數），請聯絡技術人員。';
+  return '伺服器尚未設定初始管理密碼：請設定環境變數 ADMIN_PASSWORD，或完成雲端雜湊儲存後再試。';
+}
+
 // 管理員輸入密碼、通過後導向活動剪影或公益商品後台
-export default function LoginForm() {
+export default function LoginForm({ blockedReason = null }: LoginFormProps) {
   const searchParams = useSearchParams();
   const nextRaw = searchParams.get('next');
-  const reason = searchParams.get('reason');
   const nextTarget = useMemo(() => safeRedirectPathForLogin(nextRaw), [nextRaw]);
 
+  // 伺服器確認無法登入時鎖住輸入與送出（不依賴網址上的 reason，以免與實際部署狀態不同步）
+  const serverBlocked = blockedReason !== null;
+
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(
-    reason === 'config' ? '伺服器尚未設定管理登入（環境變數），請聯絡技術人員。' : null
+  const [error, setError] = useState<string | null>(() =>
+    blockedReason ? blockedMessage(blockedReason) : null
   );
   const [loading, setLoading] = useState(false);
+  const [runtimeBlocked, setRuntimeBlocked] = useState(false);
+  const shouldDisableSubmit = loading || serverBlocked || runtimeBlocked;
 
   // 這裡是送出密碼、向伺服器換取受保護 Cookie
   async function onSubmit(e: React.FormEvent) {
@@ -32,6 +46,8 @@ export default function LoginForm() {
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (!res.ok || !data.ok) {
+        // 只要後端回 503，就視為伺服器設定未完成並鎖住送出，避免重複送出同樣失敗請求
+        if (res.status === 503) setRuntimeBlocked(true);
         setError(data.error || '登入失敗。');
         setLoading(false);
         return;
@@ -77,7 +93,7 @@ export default function LoginForm() {
             >
               <Image
                 src="/images/logo.jpg"
-                alt="瑀過天泰關懷協會"
+                alt="瑀過天秦關懷協會"
                 fill
                 className="object-cover"
                 sizes="100px"
@@ -126,7 +142,7 @@ export default function LoginForm() {
                   onChange={(ev) => setPassword(ev.target.value)}
                   className="w-full rounded-xl border border-gray-200 px-3.5 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
                   placeholder="請輸入密碼"
-                  disabled={loading || reason === 'config'}
+                  disabled={shouldDisableSubmit}
                   required
                   aria-invalid={Boolean(error)}
                   aria-describedby={error ? 'admin-login-error' : undefined}
@@ -147,17 +163,25 @@ export default function LoginForm() {
               <button
                 type="submit"
                 className="btn-primary w-full justify-center py-3.5 text-base font-semibold disabled:opacity-60 disabled:pointer-events-none"
-                disabled={loading || reason === 'config'}
+                disabled={shouldDisableSubmit}
               >
                 {loading ? '驗證中…' : '安全登入'}
               </button>
             </form>
 
-            {reason === 'config' && (
+            {blockedReason === 'secret' && (
               <p className="mt-5 text-xs text-gray-500 leading-relaxed border-t border-gray-100 pt-5">
                 若您是網站管理員：請在部署環境設定 <span className="font-mono text-[11px]">ADMIN_PASSWORD</span> 與{' '}
                 <span className="font-mono text-[11px]">ADMIN_SESSION_SECRET</span>（可參考專案內{' '}
                 <code className="text-[11px] bg-gray-100 px-1 rounded">.env.example</code>）。
+              </p>
+            )}
+            {blockedReason === 'credential' && (
+              <p className="mt-5 text-xs text-gray-500 leading-relaxed border-t border-gray-100 pt-5">
+                若您是網站管理員：請在部署環境設定 <span className="font-mono text-[11px]">ADMIN_PASSWORD</span>
+                ，或透過後台／Redis 建立密碼雜湊（正式站建議見{' '}
+                <code className="text-[11px] bg-gray-100 px-1 rounded">docs/DEPLOY_VERCEL_自有網域.md</code>{' '}
+                相關說明）。
               </p>
             )}
           </div>

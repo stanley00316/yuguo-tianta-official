@@ -1,207 +1,116 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
-import HeroLogoEditorModal from '@/components/home/HeroLogoEditorModal';
+
 import { useAdminSession } from '@/hooks/useAdminSession';
-import {
-  DEFAULT_HERO_LOGO_PATH,
-  HERO_LOGO_BASE_REM,
-  HERO_LOGO_STORAGE_KEY,
-  HERO_LOGO_SYNC_EVENT,
-  type HeroLogoStored,
-  parseHeroLogoStored,
-} from '@/lib/hero-logo-settings';
 
-const DEFAULT_STORED: HeroLogoStored = { imageSrc: null, frameScale: 1 };
+const HERO_BACKGROUND_IMAGE_URL = '/api/hero-background/image';
 
-// 首頁最上方的全版 Hero Banner（LOGO 可由管理員點擊編輯，資料存 localStorage）
+// 首頁第一屏：照片背景由後台上傳，沒有自訂圖時用溫暖漸層當安全底圖。
 export default function HeroBanner() {
   const { isAdmin } = useAdminSession();
-  const [stored, setStored] = useState<HeroLogoStored>(DEFAULT_STORED);
-  const [editorOpen, setEditorOpen] = useState(false);
-
-  // 從瀏覽器讀取自訂 LOGO／圓框比例，並聽同步事件（同頁儲存或他分頁）
-  const loadStored = useCallback(() => {
-    try {
-      const raw = localStorage.getItem(HERO_LOGO_STORAGE_KEY);
-      const parsed = parseHeroLogoStored(raw);
-      setStored(parsed ?? DEFAULT_STORED);
-    } catch {
-      setStored(DEFAULT_STORED);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadStored();
-    window.addEventListener(HERO_LOGO_SYNC_EVENT, loadStored);
-    window.addEventListener('storage', loadStored);
-    return () => {
-      window.removeEventListener(HERO_LOGO_SYNC_EVENT, loadStored);
-      window.removeEventListener('storage', loadStored);
-    };
-  }, [loadStored]);
-
-  const displaySrc = stored.imageSrc ?? DEFAULT_HERO_LOGO_PATH;
-  const isDataUrl = displaySrc.startsWith('data:');
-  const s = stored.frameScale;
-  const sizeMobile = Math.round(256 * s);
-  const sizeSm = Math.round(320 * s);
-  const sizeLg = Math.round(384 * s);
 
   return (
     <section
-      className="relative overflow-hidden min-h-[360px] sm:min-h-[440px] lg:min-h-[520px]"
+      className="relative isolate overflow-hidden min-h-[520px] sm:min-h-[600px] lg:min-h-[640px]"
       style={{
-        background: 'linear-gradient(135deg, #FFF8EC 0%, #EDF6FF 50%, #F0FBF0 100%)',
+        backgroundColor: '#D6B47A',
+        backgroundImage: [
+          'linear-gradient(90deg, rgba(64, 40, 22, 0.78) 0%, rgba(83, 51, 28, 0.58) 43%, rgba(255, 255, 255, 0.08) 100%)',
+          'linear-gradient(180deg, rgba(255, 248, 237, 0.24) 0%, rgba(255, 255, 255, 0) 44%, rgba(250, 250, 247, 0.28) 100%)',
+          `url("${HERO_BACKGROUND_IMAGE_URL}")`,
+          'radial-gradient(circle at 18% 34%, rgba(111, 157, 82, 0.78) 0%, rgba(111, 157, 82, 0) 32%)',
+          'radial-gradient(circle at 78% 28%, rgba(255, 225, 151, 0.82) 0%, rgba(255, 225, 151, 0) 34%)',
+          'linear-gradient(135deg, #E6C17B 0%, #A8C983 46%, #7FB2D4 100%)',
+        ].join(', '),
+        backgroundSize: 'cover, cover, cover, cover, cover, cover',
+        backgroundPosition: 'center, center, center, center, center, center',
+        backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* 背景裝飾圓形（彩虹色系） */}
-      <div
-        className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-10 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #F5A623, transparent)' }}
-      />
-      <div
-        className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full opacity-8 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #4A90D9, transparent)' }}
-      />
-      <div
-        className="absolute top-10 left-1/4 w-32 h-32 rounded-full opacity-6 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #5CB85C, transparent)' }}
-      />
-
-      <div className="container-site relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-4 py-12 sm:py-16 lg:py-20">
-          {/* 左側文字區 */}
-          <div className="flex-1 max-w-xl text-center lg:text-left">
-            <div className="inline-flex flex-wrap items-center gap-2 mb-5 justify-center lg:justify-start">
-              <div className="flex gap-1">
-                {['#E84040', '#F5A623', '#5CB85C', '#4A90D9'].map((c, i) => (
-                  <span key={i} className="w-3 h-3 rounded-full" style={{ background: c }} />
-                ))}
-              </div>
-              <span className="text-xs sm:text-sm font-semibold text-gray-500 tracking-wide text-center lg:text-left">
-                社團法人高雄市瑀過天泰關懷協會
-              </span>
-            </div>
-
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4"
-              style={{
-                fontFamily: "'Nunito', 'Noto Sans TC', sans-serif",
-                color: '#1A1A1A',
-              }}
-            >
-              用溫暖陪伴，<br />
-              <span
-                className="inline-block"
-                style={{
-                  background: 'linear-gradient(90deg, #F5A623, #E84040)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                讓每個人都被看見
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-              透過職業訓練與公益商品，
-              <br />
-              為每一位夥伴創造有尊嚴的工作機會。
-            </p>
-
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <Link href="/about" className="btn-primary">
-                認識我們
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link href="/products" className="btn-secondary">
-                瀏覽公益商品
-              </Link>
-            </div>
-          </div>
-
-          {/* 右側 LOGO：管理員點擊可開啟編輯；lg 負 margin 貼右緣 */}
-          <div className="flex-shrink-0 relative lg:-mr-[max(2.5rem,env(safe-area-inset-right,0px))]">
-            <div
-              className="absolute inset-0 rounded-full blur-3xl opacity-30 pointer-events-none"
-              style={{
-                background: 'conic-gradient(from 0deg, #E84040, #F5A623, #5CB85C, #4A90D9, #E84040)',
-                transform: `scale(${1.18 * s})`,
-              }}
-            />
-            <div
-              className={`relative hero-logo-frame rounded-full overflow-hidden border-4 border-white ${
-                isAdmin ? 'cursor-pointer ring-2 ring-orange-400/90 ring-offset-4 ring-offset-[#FFF8EC] sm:ring-offset-[#EDF6FF]' : ''
-              }`}
-              style={
-                {
-                  '--hero-logo-base-mobile': `${HERO_LOGO_BASE_REM.mobile}rem`,
-                  '--hero-logo-base-sm': `${HERO_LOGO_BASE_REM.sm}rem`,
-                  '--hero-logo-base-lg': `${HERO_LOGO_BASE_REM.lg}rem`,
-                  '--hero-logo-scale': stored.frameScale,
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-                } as React.CSSProperties
-              }
-              role={isAdmin ? 'button' : undefined}
-              tabIndex={isAdmin ? 0 : undefined}
-              aria-label={isAdmin ? '編輯首頁大圖 LOGO 與圓框大小' : undefined}
-              onClick={isAdmin ? () => setEditorOpen(true) : undefined}
-              onKeyDown={
-                isAdmin
-                  ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setEditorOpen(true);
-                      }
-                    }
-                  : undefined
-              }
-            >
-              {isDataUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={displaySrc}
-                  alt="瑀過天泰關懷協會"
-                  className="absolute inset-0 w-full h-full object-fill"
-                />
-              ) : (
-                <Image
-                  src={displaySrc}
-                  alt="瑀過天泰關懷協會"
-                  fill
-                  className="object-fill"
-                  sizes={`(max-width: 639px) ${sizeMobile}px, (max-width: 1023px) ${sizeSm}px, ${sizeLg}px`}
-                  priority
-                />
-              )}
-            </div>
-            {isAdmin && !editorOpen && (
-              <p className="mt-3 text-center lg:text-right text-xs font-semibold text-orange-700/90 max-w-[18rem] lg:ml-auto">
-                管理者：點擊圓形 LOGO 可上傳圖檔並調整大小
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
-        <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-12">
-          <path d="M0 48 C360 0 1080 0 1440 48 L1440 48 L0 48 Z" fill="#FAFAF7" />
+      {/* 上方白色弧線：承接固定頁首，做出參考圖的柔和波浪感。 */}
+      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+        <svg viewBox="0 0 1440 96" className="w-full h-16 sm:h-20 lg:h-24" preserveAspectRatio="none" aria-hidden>
+          <path d="M0 0 H1440 V34 C1090 92 310 92 0 34 Z" fill="white" />
         </svg>
       </div>
 
-      <HeroLogoEditorModal
-        open={editorOpen}
-        onClose={() => setEditorOpen(false)}
-        initial={stored}
-        onSaved={(next) => setStored(next)}
-      />
+      <div className="container-site relative z-10 min-h-[520px] sm:min-h-[600px] lg:min-h-[640px] flex items-center pt-24 sm:pt-28 lg:pt-32 pb-28 sm:pb-32 lg:pb-36">
+        <div className="max-w-2xl text-center lg:text-left text-white">
+          <div className="inline-flex flex-wrap items-center gap-2 mb-5 justify-center lg:justify-start">
+            <div className="flex gap-1">
+              {['#E84040', '#F5A623', '#5CB85C', '#4A90D9'].map((color) => (
+                <span key={color} className="w-3 h-3 rounded-full border border-white/60" style={{ background: color }} />
+              ))}
+            </div>
+            <span className="text-xs sm:text-sm font-bold tracking-wide text-white/95 drop-shadow">
+              社團法人高雄市瑀過天秦關懷協會
+            </span>
+          </div>
+
+          <h1
+            className="mb-5 tracking-normal"
+            style={{
+              fontFamily: "'Nunito', 'Noto Sans TC', sans-serif",
+              textShadow: '0 2px 18px rgba(0, 0, 0, 0.34)',
+            }}
+          >
+            <span className="block text-2xl sm:text-3xl lg:text-4xl font-black leading-tight">
+              以陪伴為起點，看見每一段成長的價值。
+            </span>
+            <span className="mt-4 block max-w-xl text-base sm:text-lg lg:text-xl font-bold leading-[1.65] text-white/95 mx-auto lg:mx-0">
+              我們從早期療育出發，陪伴至成人階段，持續支持身心障礙者與弱勢族群走過人生的重要歷程。
+            </span>
+          </h1>
+
+          <p
+            className="text-base sm:text-lg text-white/92 mb-7 sm:mb-8 leading-relaxed"
+            style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.28)' }}
+          >
+            透過職業訓練與公益商品的推動，
+            <br />
+            我們不只是提供機會，
+            <br />
+            更致力於打造穩定的工作機會與安心的生活，
+            <br />
+            實現共融、共好的社會願景。
+          </p>
+
+          <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+            <Link href="/about" className="btn-primary">
+              認識我們
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 bg-white/92 text-[#2F6EB5] border-2 border-white font-bold py-3 px-7 rounded-full transition-all duration-200 hover:bg-white hover:-translate-y-0.5"
+              style={{ fontFamily: "'Nunito', 'Noto Sans TC', sans-serif" }}
+            >
+              瀏覽公益商品
+            </Link>
+          </div>
+
+          {isAdmin && (
+            <div className="mt-5">
+              <Link
+                href="/hero/manage"
+                className="inline-flex items-center rounded-full bg-white/88 px-4 py-2 text-xs font-bold text-orange-700 shadow-sm transition hover:bg-white"
+              >
+                管理者：編輯首頁背景
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 下方白色弧線：讓照片自然銜接下一個暖白區塊。 */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+        <svg viewBox="0 0 1440 112" className="w-full h-24 sm:h-28" preserveAspectRatio="none" aria-hidden>
+          <path d="M0 62 C260 100 430 28 620 52 C850 82 980 26 1188 46 C1328 60 1398 50 1440 34 V112 H0 Z" fill="#FAFAF7" />
+        </svg>
+      </div>
     </section>
   );
 }

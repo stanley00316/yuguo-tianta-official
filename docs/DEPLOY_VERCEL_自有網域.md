@@ -1,4 +1,4 @@
-# 免費上架 Vercel + 綁定自有網域（瑀過天泰官網）
+# 免費上架 Vercel + 綁定自有網域（瑀過天秦官網）
 
 本專案為 **Next.js App Router**。使用 **Vercel Hobby（免費方案）** 即可部署；**自有網域**只要在網址商（DNS）照 Vercel 指示設定紀錄即可。
 
@@ -100,8 +100,10 @@ Vercel 會自動申請 **Let’s Encrypt** 憑證，網域驗證通過後 **HTTP
   - **`ADMIN_PASSWORD`**：初次登入或未匯入雜湊前使用（請使用足夠強的密碼）；若已改用雜湊儲存，登入將以儲存的雜湊為準。
 - 可複製專案內 **`.env.example`** 的變數名稱；請勿把真實密碼提交到 Git。
 - **`/news/manage`**：最新消息後台（與活動剪影、公益商品相同需管理員登入）；內容仍主要存在訪客 **瀏覽器 localStorage**。
-- **聯絡我們表單（`/contact`）**：訪客送出留言先到 **`POST /api/contact`**，內容會寫入 **Upstash Redis**（與上列 **`UPSTASH_REDIS_REST_*`** 相同設定；列表鍵由程式維護）。管理者登入後可至 **`/contact/manage`** 在網頁上檢視留言，**不必依賴電子郵件**。
-  - **本機開發**：若未設定 Redis，留言會寫入 **`data/contact-inbox.jsonl`**（勿提交版控）。
+- **聯絡我們表單（`/contact`）**：訪客送出留言至 **`POST /api/contact`**，成功後寫入站內收件匣，管理者可至 **`/contact/manage`** 檢視（不必依賴電子郵件）。
+  - **已設定 `UPSTASH_REDIS_REST_URL`／`UPSTASH_REDIS_REST_TOKEN`**：留言存於 Upstash Redis（與變更管理密碼可共用同一組；列表鍵由程式維護）。
+  - **未設定 Redis（自主機房／單機持久碟）**：留言寫入專案目錄 **`data/contact-inbox.jsonl`**（已列入 `.gitignore`，請自行備份該檔或整個 `data/`）。
+  - **Vercel 正式環境**：無持久硬碟，**未設 Redis 時無法**使用站內留言儲存（避免誤以為已存檔）；請設 Upstash 或改自主機房。
   - **選填**：若仍想收到信，可設定 **`WEB3FORMS_ACCESS_KEY`** 或 **`RESEND_API_KEY`** + **`CONTACT_TO_EMAIL`**（儲存成功後額外嘗試寄信，寄信失敗不影響站內已存留言）。
 - `/products/manage`、`/gallery/manage` 等編輯內容目前主要存在訪客 **瀏覽器 localStorage**，**不會**因為換網域就自動出現在每位訪客電腦上。
 - 正式上線若希望「全站訪客看到同一份商品／相簿／消息」，需要之後改為 **伺服器或雲端儲存**（可再規劃下一階段）。
@@ -114,7 +116,7 @@ Vercel 會自動申請 **Let’s Encrypt** 憑證，網域驗證通過後 **HTTP
 - [ ] `www` 與非 `www` 是否如預期導向同一網址
 - [ ] 手機開啟排版正常
 - [ ] 管理員登入：未登入時無法開啟 `/gallery/manage`、`/products/manage`、**`/news/manage`**、**`/contact/manage`**
-- [ ] 聯絡我們：已設定 **Upstash Redis**（與變更密碼相同）；測試公開頁送出後，登入 **`/contact/manage`** 可看到新留言
+- [ ] 聯絡我們：**Vercel** 請設定 **Upstash Redis** 後測試；**自主機房**未設 Redis 時應寫入 **`data/contact-inbox.jsonl`**，登入 **`/contact/manage`** 可看到新留言
 - [ ] （選）聯絡我們額外寄信：已設定 `WEB3FORMS_ACCESS_KEY` 或 `RESEND_API_KEY` + `CONTACT_TO_EMAIL` 者，可確認是否收到通知信
 - [ ] （選）已登入時可進入 **`/admin/change-password`** 變更密碼：Vercel 請確認 Upstash Redis 環境變數已設定
 - [ ] **`NEXT_PUBLIC_SITE_URL`**（建議）：設定後檢查 `https://你的網域/sitemap.xml` 是否為預期正式網址

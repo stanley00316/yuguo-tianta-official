@@ -259,23 +259,28 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* 首頁 Hero：圓框寬高依 CSS 變數縮放（管理員可調比例） */
+/* 首頁 Hero：圓框寬高依 CSS 變數縮放（管理員可調比例）
+   min() 確保手機版不會超出螢幕寬度造成右側被截斷 */
 .hero-logo-frame {
-  width: calc(var(--hero-logo-base-mobile, 16rem) * var(--hero-logo-scale, 1));
-  height: calc(var(--hero-logo-base-mobile, 16rem) * var(--hero-logo-scale, 1));
+  --_size: calc(var(--hero-logo-base-mobile, 16rem) * var(--hero-logo-scale, 1));
+  width: min(var(--_size), calc(100vw - 3rem));
+  height: min(var(--_size), calc(100vw - 3rem));
 }
 
 @media (min-width: 640px) {
   .hero-logo-frame {
-    width: calc(var(--hero-logo-base-sm, 20rem) * var(--hero-logo-scale, 1));
-    height: calc(var(--hero-logo-base-sm, 20rem) * var(--hero-logo-scale, 1));
+    --_size: calc(var(--hero-logo-base-sm, 20rem) * var(--hero-logo-scale, 1));
+    width: min(var(--_size), calc(100vw - 4rem));
+    height: min(var(--_size), calc(100vw - 4rem));
   }
 }
 
 @media (min-width: 1024px) {
   .hero-logo-frame {
-    width: calc(var(--hero-logo-base-lg, 24rem) * var(--hero-logo-scale, 1));
-    height: calc(var(--hero-logo-base-lg, 24rem) * var(--hero-logo-scale, 1));
+    --_size: calc(var(--hero-logo-base-lg, 24rem) * var(--hero-logo-scale, 1));
+    /* 桌機版保留原始尺寸，由容器本身限制顯示範圍 */
+    width: var(--_size);
+    height: var(--_size);
   }
 }
 

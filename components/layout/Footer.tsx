@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import {
-  SITE_MAIN_PHONE_HREF,
-  SITE_MAIN_PHONE_LABEL,
-  SITE_SERVICE_LOCATIONS,
-} from '@/lib/site-contact';
+import { SITE_PHONES, SITE_SERVICE_LOCATIONS } from '@/lib/site-contact';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -24,7 +20,7 @@ export default function Footer() {
               <div className="relative w-16 h-16 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="瑀過天泰關懷協會"
+                  alt="瑀過天秦關懷協會"
                   fill
                   className="object-contain rounded-full border-2 border-white/20"
                 />
@@ -32,7 +28,7 @@ export default function Footer() {
               <div>
                 <div className="text-white font-bold text-lg leading-tight"
                   style={{ fontFamily: "'Nunito', 'Noto Sans TC', sans-serif" }}>
-                  瑀過天泰關懷協會
+                  瑀過天秦關懷協會
                 </div>
                 <div className="text-gray-400 text-xs mt-0.5">試衣間身心障礙工坊</div>
               </div>
@@ -114,14 +110,22 @@ export default function Footer() {
                   ))}
                 </div>
               </li>
-              <li className="flex items-center gap-2.5">
+              <li className="flex items-start gap-2.5">
                 {/* 電話圖示 */}
-                <svg className="w-4 h-4 flex-shrink-0 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
-                <a href={SITE_MAIN_PHONE_HREF} className="hover:text-orange-400 transition-colors">
-                  {SITE_MAIN_PHONE_LABEL}
-                </a>
+                <div className="flex flex-col gap-1.5">
+                  {SITE_PHONES.map((phone) => (
+                    <a
+                      key={phone.href}
+                      href={phone.href}
+                      className="hover:text-orange-400 transition-colors"
+                    >
+                      {phone.label}
+                    </a>
+                  ))}
+                </div>
               </li>
               <li className="flex items-center gap-2.5">
                 {/* Facebook 圖示 */}
@@ -144,7 +148,7 @@ export default function Footer() {
 
         {/* 底部版權列 */}
         <div className="mt-10 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-          <span>© {currentYear} 社團法人高雄市瑀過天泰關懷協會. 版權所有.</span>
+          <span>© {currentYear} 社團法人高雄市瑀過天秦關懷協會. 版權所有.</span>
           <span className="text-gray-600">試衣間身心障礙工坊 官方網站</span>
         </div>
       </div>

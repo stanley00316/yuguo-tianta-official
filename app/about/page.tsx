@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: '關於我們',
-  description: '認識社團法人高雄市瑀過天泰關懷協會，了解我們的使命、服務對象與組織架構。',
+  description: '認識社團法人高雄市瑀過天秦關懷協會，了解我們的使命、服務對象與組織架構。',
 };
 
 export default function AboutPage() {
@@ -16,12 +16,19 @@ export default function AboutPage() {
     { icon: '🎨', label: '創意展能', desc: '鼓勵夥伴發揮創意，將才能轉化為具有市場價值的公益商品。' },
   ];
 
-  // 服務項目
+  // 服務項目（名片區標題與說明須與協會實際服務一致）
   const services = [
-    { title: '試衣間職訓服務', desc: '提供服飾整理、折疊、分類、陳列等實務技能培訓，協助身心障礙者熟悉零售服務業工作流程。', icon: '👗', color: '#FFF3E0', border: '#F5A623' },
-    { title: '手工藝工坊', desc: '帶領夥伴學習刺繡、手作皂、布製品等手工藝技能，並將成品轉化為公益商品對外販售。', icon: '✂️', color: '#E8F4FD', border: '#4A90D9' },
+    {
+      title: '日間作業設施-瑀過傑出工坊',
+      desc: '提供身心障礙者日間照顧與規律化作業活動，在安全、結構化的環境中練習生活自理、工作態度與職前技能，並可銜接其他訓練或就業資源。',
+      icon: '🌟',
+      color: '#F3E8FF',
+      border: '#8E44AD',
+    },
+    { title: '瑀の坊', desc: '帶領夥伴學習刺繡、手作皂、布製品等手工藝技能，並將成品轉化為公益商品對外販售。', icon: '✂️', color: '#E8F4FD', border: '#4A90D9' },
     { title: '就業輔導媒合', desc: '與友善企業合作，為完成訓練的夥伴媒合適合的職缺，並提供後續就業追蹤支持。', icon: '🤝', color: '#E8F8E8', border: '#5CB85C' },
     { title: '家庭支持服務', desc: '同時關注身障者家庭的需求，提供喘息服務資訊及照顧者支持，減輕家庭負擔。', icon: '🏠', color: '#FCE4EC', border: '#E84040' },
+    { title: '早療療育', desc: '針對發展遲緩兒童提供早期療育服務，透過專業評估與個別化訓練課程，協助幼兒在黃金期發揮最大潛能。', icon: '🌱', color: '#E0F7FA', border: '#00897B' },
   ];
 
   return (
@@ -48,7 +55,7 @@ export default function AboutPage() {
             關於我們
           </h1>
           <p className="text-gray-500 text-base max-w-lg mx-auto">
-            認識社團法人高雄市瑀過天泰關懷協會
+            認識社團法人高雄市瑀過天秦關懷協會
           </p>
         </div>
       </section>
@@ -71,7 +78,7 @@ export default function AboutPage() {
                 >
                   <Image
                     src="/images/logo.jpg"
-                    alt="社團法人高雄市瑀過天泰關懷協會"
+                    alt="社團法人高雄市瑀過天秦關懷協會"
                     fill
                     className="object-contain p-4"
                   />
@@ -84,13 +91,13 @@ export default function AboutPage() {
               <h2 className="section-title mb-6">協會簡介</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  <strong className="text-gray-800">社團法人高雄市瑀過天泰關懷協會</strong>，
+                  <strong className="text-gray-800">社團法人高雄市瑀過天秦關懷協會</strong>，
                   成立於高雄市，秉持「用溫暖陪伴，讓每個人都被看見」的核心理念，
                   長期致力於身心障礙者的職業訓練與就業支持服務。
                 </p>
                 <p>
-                  協會旗下設有「試衣間身心障礙工坊」，以零售服飾業實務操作為主要訓練項目，
-                  同時開設手工藝工坊，讓夥伴們透過創作展現自我價值。
+                  協會旗下設有日間作業設施「瑀過傑出工坊」，
+                  同時開設「瑀の坊」，讓夥伴們透過創作展現自我價值。
                 </p>
                 <p>
                   我們相信，每一位身心障礙夥伴都擁有獨特的才能與潛力。
@@ -158,7 +165,7 @@ export default function AboutPage() {
         <div className="container-site">
           <div className="mb-12">
             <h2 className="section-title">服務項目</h2>
-            <p className="mt-3 text-gray-500 text-sm">瑀過天泰提供多元化的身障服務，滿足不同夥伴的需求</p>
+            <p className="mt-3 text-gray-500 text-sm">瑀過天秦提供多元化的身障服務，滿足不同夥伴的需求</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {services.map((s, i) => (
@@ -194,7 +201,7 @@ export default function AboutPage() {
             className="text-2xl sm:text-3xl font-black mb-3"
             style={{ fontFamily: "'Nunito', 'Noto Sans TC', sans-serif" }}
           >
-            想進一步了解瑀過天泰？
+            想進一步了解瑀過天秦？
           </h2>
           <p className="text-gray-500 mb-6 max-w-md mx-auto">歡迎透過各種方式與我們聯繫，共同為身障夥伴創造更好的未來。</p>
           <Link href="/contact" className="btn-primary">

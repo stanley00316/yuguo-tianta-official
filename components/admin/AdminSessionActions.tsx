@@ -27,6 +27,18 @@ export default function AdminSessionActions() {
         <span className="text-gray-300" aria-hidden>
           |
         </span>
+        <Link href="/hero/manage" className="underline hover:text-gray-900">
+          首頁背景
+        </Link>
+        <span className="text-gray-300" aria-hidden>
+          |
+        </span>
+        <Link href="/mission/manage" className="underline hover:text-gray-900">
+          使命照片
+        </Link>
+        <span className="text-gray-300" aria-hidden>
+          |
+        </span>
         <Link href="/contact/manage" className="underline hover:text-gray-900">
           留言收件
         </Link>

@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { ADMIN_COOKIE_NAME, verifySessionToken } from '@/lib/admin-auth';
 import {
+  CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE,
   canListContactMessagesInProduction,
   listContactMessages,
 } from '@/lib/contact-inbox-store';
@@ -26,8 +27,7 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        error:
-          '正式環境請設定 Upstash Redis（UPSTASH_REDIS_REST_URL／UPSTASH_REDIS_REST_TOKEN）才能讀取站內留言。',
+        error: CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE,
       },
       { status: 503 }
     );

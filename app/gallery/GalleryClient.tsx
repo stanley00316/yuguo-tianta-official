@@ -63,7 +63,7 @@ export default function GalleryClient({ items: initialItems }: GalleryClientProp
             活動剪影
           </h1>
           <p className="text-gray-500 text-base max-w-lg mx-auto">
-            紀錄每一個感動的瞬間，見證夥伴們的成長與蛻變
+            紀錄每一個感動的瞬間，見證一路走來的成長與蛻變。
           </p>
           <p className="mt-4">
             {isAdmin ? (

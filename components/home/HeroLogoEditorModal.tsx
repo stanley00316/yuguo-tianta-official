@@ -97,7 +97,7 @@ export default function HeroLogoEditorModal({ open, onClose, initial, onSaved }:
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:justify-start p-4 sm:pl-8 lg:pl-16 bg-black/50"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -122,6 +122,10 @@ export default function HeroLogoEditorModal({ open, onClose, initial, onSaved }:
 
           <div>
             <label className="form-label">更換圖檔</label>
+            {/* 說明如何準備圖片，避免圓框裁切到邊緣文字 */}
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-2 leading-relaxed">
+              📐 <strong>上傳建議</strong>：請使用<strong>正方形</strong>圖片（如 800×800px），且圖案（含邊框文字）完整保留在畫面中央，四周留白至少 5%，以免圓框裁切到字。
+            </p>
             <div className="flex flex-wrap items-center gap-2">
               <label className="btn-secondary text-sm py-2 px-4 cursor-pointer">
                 {busy ? '處理中…' : '選擇圖片'}
@@ -166,7 +170,7 @@ export default function HeroLogoEditorModal({ open, onClose, initial, onSaved }:
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewSrc} alt="" className="w-full h-full object-fill" />
+                <img src={previewSrc} alt="" className="w-full h-full object-contain" />
               </div>
             </div>
           </div>

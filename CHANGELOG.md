@@ -1,4 +1,161 @@
-# CHANGELOG - 瑀過天泰關懷協會官方網站
+# CHANGELOG - 瑀過天秦關懷協會官方網站
+
+## [1.7.17] - 2026-05-12
+
+### 修正（管理者登入狀態文字）
+
+- **`components/layout/Header.tsx`**：管理者已登入時，官網頁首原本的「管理者登入」改顯示為「已登入」，點擊仍會前往後台入口；未登入時維持顯示「管理者登入」。
+
+---
+
+## [1.7.16] - 2026-05-12
+
+### 新增（首頁背景改為溫馨照片風格）
+
+- **`components/home/HeroBanner.tsx`**：首頁第一屏改成參考圖風格的全寬照片背景，上下加入白色弧形銜接，保留原本主標、說明與「認識我們／瀏覽公益商品」按鈕。
+- **`app/hero/manage/page.tsx`**、**`app/api/admin/hero-background/route.ts`**：新增「首頁背景」後台，可上傳、重新上傳與移除背景圖；圖片會先壓縮並檢查格式與大小。
+- **`lib/hero-background-store.ts`**、**`app/api/hero-background/image/route.ts`**：首頁背景改為全訪客共用，優先存 Upstash Redis，未設定 Redis 時存伺服器 `data/hero-background.json`；Vercel 正式環境未設定 Redis 時會清楚提示無法儲存。
+- **`components/admin/AdminSessionActions.tsx`**：後台快速導覽新增「首頁背景」入口；公開桌面導覽列未調整。
+
+---
+
+## [1.7.15] - 2026-05-12
+
+### 調整（使命照片擴充為每卡 3 張，共 9 格輪播）
+
+- **`lib/mission.ts`**：型別從單一 URL 陣列升級為 `MissionImages = [MissionCardImages, MissionCardImages, MissionCardImages]`（3×3），儲存 key 改為 `yuguo-tianta-mission-images-v2` 避免與舊格式衝突。
+- **`components/home/MissionSection.tsx`**：每張使命卡片改以子元件 `MissionCard` 渲染，有多張照片時每 3 秒自動輪播，底部顯示白色圓點導覽，可手動點擊切換。
+- **`app/mission/manage/page.tsx`**：管理頁改為三大區塊各含 3 格上傳槽（共 9 格），顯示「已上傳 n/3 張」計數，每格獨立上傳、重新上傳、移除。
+
+---
+
+## [1.7.14] - 2026-05-12
+
+### 新增（使命區塊照片上傳）
+
+- **`lib/mission.ts`**（新增）：定義 `MissionImages` 型別與 `MISSION_IMAGES_STORAGE_KEY`；提供 `parseStoredMissionImages()` 安全解析 localStorage 資料，圖片來源僅允許壓縮 data URL 或白名單公開路徑。
+- **`components/home/MissionSection.tsx`**：改為 `'use client'` 元件，以 `useEffect` 讀取 localStorage 使命照片；有照片時以 180px 高的 `next/image` 取代 Emoji 圓形圖示，無照片時回退顯示原 Emoji。管理員已登入時顯示「編輯使命照片 →」快速連結。
+- **`app/mission/manage/page.tsx`**（新增）：後台使命照片管理頁，三欄各自獨立管理，支援上傳（自動壓縮至 1200px JPEG）、即時預覽、重新上傳與移除照片，錯誤提示即時顯示。
+- **`app/mission/manage/layout.tsx`**（新增）：設定頁面標題「使命照片編輯」，`robots: no-index`。
+- **`components/admin/AdminSessionActions.tsx`**：後台快速導覽列「最新消息」後方新增「使命照片」連結至 `/mission/manage`。
+
+---
+
+## [1.7.13] - 2026-05-07
+
+### 修正（品牌文字）
+
+- 官網頁首、頁尾、首頁、關於我們、商品、活動、消息、聯絡頁、管理員登入頁、SEO 描述與聯絡信件標題，統一將「瑀過天泰」修正為「瑀過天秦」。
+- 這次只修正顯示文字與系統帶出的信件標題，沒有更動頁面路由、表單資料或後台權限。
+
+---
+
+## [1.7.12] - 2026-05-04
+
+### 捐款支持頁與手機選單
+
+- **`app/donation/page.tsx`**（新增）：顯示捐款 DM 海報與匯款／服務主軸文字版；靜態圖 **`public/images/donation-support-poster.png`**。
+- **`components/layout/Header.tsx`**：手機版底部主按鈕改為「**捐款支持**」連 **`/donation`**（桌機「支持我們」仍為 **`/contact`**）。
+
+---
+
+## [1.7.11] - 2026-05-04
+
+### 頁首 Logo 與固定首頁路徑
+
+- **`components/layout/Header.tsx`**：Logo／標題連結改為 **`/site-home`**。
+- **`app/site-home/page.tsx`**（新增）：與 **`/`** 相同首頁區塊，`robots: noindex`，供 Logo 連結使用並與 **`LTC/apps/admin-web`** 路徑一致。
+
+---
+
+## [1.7.10] - 2026-05-03
+
+### 調整（首頁 Hero）
+
+- **`components/home/HeroBanner.tsx`**：主標改為「一句主標＋一句補述」兩層字級（縮小整體視覺、加舒適行距），補述改為自動換行並限制最大寬度，版面較易一口氣讀完。
+
+---
+
+## [1.7.9] - 2026-05-03
+
+### 調整（頁首）
+
+- **`components/layout/Header.tsx`**：手機版漢堡選單將「首頁」改顯示為「**官方網站首頁**」，連結仍為 **`/`**；桌面版仍顯示「首頁」。
+
+---
+
+## [1.7.8] - 2026-05-03
+
+### 關於我們／服務項目
+
+- **`app/about/page.tsx`**：服務項目新增「**日間作業設施-瑀過傑出工坊**」（附簡要說明）；原「**手工藝工坊**」標題改為「**瑀の坊**」。協會簡介段落同步提及日間作業設施與「瑀の坊」。
+
+---
+
+## [1.7.7] - 2026-05-03
+
+### 文案（頁首）
+
+- **`components/layout/Header.tsx`**：Logo 旁標題改為「**社團法人高雄市瑀過天秦關懷協會**」（移除前綴「我們是」）。
+
+---
+
+## [1.7.6] - 2026-05-03
+
+### 調整（頁首）
+
+- **`components/layout/Header.tsx`**：手機版漢堡選單將「**活動剪影**」移到「**最新消息**」下方；桌面版順序不變。
+
+---
+
+## [1.7.5] - 2026-05-03
+
+### 調整（頁首）
+
+- **`components/layout/Header.tsx`**：手機版漢堡選單將「**關於我們**」移到「**聯絡我們**」下方（連結列最後一項），桌面版順序不變。
+
+---
+
+## [1.7.4] - 2026-05-03
+
+### 文案與聯絡電話
+
+- **`components/home/HeroBanner.tsx`**：首頁主標、副標正文更新。
+- **`components/layout/Header.tsx`**：Logo 旁標題改為完整法人名銜（瑀過天秦用字依客戶稿）。
+- **`app/gallery/GalleryClient.tsx`**、**`app/news/NewsClient.tsx`**：頁首說明更新。
+- **`lib/site-contact.ts`**：新增第二支市話 **07-34355636**；**`Footer`**、**`ContactClient`** 並列兩支 **`tel:`** 連結。
+
+---
+
+## [1.7.3] - 2026-05-01
+
+### 聯絡表單純檔案收件匣（自主機房）
+
+- **`lib/contact-inbox-store.ts`**：未設定 Upstash 時，**正式環境**亦改寫 **`data/contact-inbox.jsonl`**（與開發環境相同邏輯），最多 500 筆；**Vercel 正式環境**仍要求 Redis，避免無持久碟誤用。
+- **`canListContactMessagesInProduction()`**：非 Vercel 之正式環境在未設 Redis 時仍可讀取檔案收件匣。
+- **`CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE`**：管理 API 於 Vercel 無 Redis 時之 503 說明（與自主機房分流）。
+- **`docs/DEPLOY_VERCEL_自有網域.md`**、**`.env.example`**、**`app/contact/manage/page.tsx`**：更新收件匣儲存說明。
+
+---
+
+## [1.7.2] - 2026-05-01
+
+### 管理員登入（503 防重送）
+
+- **`app/admin/login/LoginForm.tsx`**：登入 API 一旦回 **503**（伺服器設定未完成），前端立即鎖住密碼欄與「安全登入」按鈕，避免使用者反覆送出同樣請求。
+- 同步保留紅框錯誤訊息，讓管理員可直接對照環境變數設定後再重試。
+
+---
+
+## [1.7.1] - 2026-05-01
+
+### 管理員登入（環境不完整時）
+
+- **`app/admin/login/page.tsx`**：伺服端一併檢查 **`ADMIN_SESSION_SECRET`** 與 **`hasUsableAdminCredential()`**（與 **`POST /api/admin/login`** 一致），算出 **`blockedReason`**。
+- **`app/admin/login/LoginForm.tsx`**：依 **`blockedReason`** 顯示對應紅框說明、鎖密碼欄／按鈕，並區分「未設工作階段密鑰」與「未設可用的管理密碼／雜湊」；**不再只依網址** **`reason=config`**（避免網址與實際 Vercel 設定不同步）。
+- 目的：**正式環境少變數時**仍能一看就懂要改設定，並減少「以為可以登入／Console 只看到 503」的落差。
+
+---
 
 ## [1.7.0] - 2026-04-30
 

@@ -10,7 +10,7 @@ import {
   type ContactSubject,
 } from '@/lib/contact-submission';
 
-// 訪客留言儲存：正式環境用 Upstash Redis（與管理密碼相同設定），本機開發可只用檔案
+// 訪客留言：有 Upstash 時寫 Redis；否則寫本機 data/contact-inbox.jsonl（自主機房單機持久碟適用）
 const REDIS_LIST_KEY = 'yuguo:contact:inbox_v1';
 const MAX_MESSAGES = 500;
 const INBOX_FILENAME = 'contact-inbox.jsonl';
@@ -29,6 +29,11 @@ function hasRedisEnv(): boolean {
   return Boolean(
     process.env.UPSTASH_REDIS_REST_URL?.trim() && process.env.UPSTASH_REDIS_REST_TOKEN?.trim()
   );
+}
+
+// Vercel 無持久硬碟：正式環境若未設 Redis，不可假裝「檔案收件匣」有效
+function isVercelRuntime(): boolean {
+  return Boolean(process.env.VERCEL);
 }
 
 function inboxFilePath(): string {
@@ -62,10 +67,51 @@ function parseStoredLine(line: string): StoredContactMessage | null {
   }
 }
 
+// 從檔案讀入全部留言並依時間新到舊排序
+async function loadMessagesFromFile(): Promise<StoredContactMessage[]> {
+  const fp = inboxFilePath();
+  let text: string;
+  try {
+    text = await fs.readFile(fp, 'utf8');
+  } catch {
+    return [];
+  }
+  const items: StoredContactMessage[] = [];
+  for (const line of text.split('\n')) {
+    if (!line.trim()) continue;
+    const p = parseStoredLine(line);
+    if (p) items.push(p);
+  }
+  items.sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
+  return items;
+}
+
+// 將清單寫回 jsonl（每行一筆 JSON；順序為新到舊）
+async function writeMessagesToFile(newestFirst: StoredContactMessage[]): Promise<void> {
+  const fp = inboxFilePath();
+  await fs.mkdir(path.dirname(fp), { recursive: true });
+  const trimmed = newestFirst.slice(0, MAX_MESSAGES);
+  const body =
+    trimmed.length === 0 ? '' : trimmed.map((x) => JSON.stringify(x)).join('\n') + '\n';
+  await fs.writeFile(fp, body, { encoding: 'utf8', mode: 0o600 });
+}
+
+function vercelProductionWithoutRedisBlocked(): boolean {
+  return process.env.NODE_ENV === 'production' && isVercelRuntime() && !hasRedisEnv();
+}
+
 // 將通過驗證的聯絡表單寫入站內收件匣
 export async function saveContactMessage(
   data: ContactPayload
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (vercelProductionWithoutRedisBlocked()) {
+    return {
+      ok: false,
+      error:
+        '此部署環境（Vercel）無持久硬碟，請在環境變數設定 UPSTASH_REDIS_REST_URL 與 UPSTASH_REDIS_REST_TOKEN，或改用自主機房主機儲存留言。',
+    };
+  }
+
   const record: StoredContactMessage = {
     id: randomUUID(),
     receivedAt: new Date().toISOString(),
@@ -81,7 +127,6 @@ export async function saveContactMessage(
       const { Redis } = await import('@upstash/redis');
       const redis = Redis.fromEnv();
       const line = JSON.stringify(record);
-      // 新留言插在列表最前，並保留最近 MAX_MESSAGES 筆
       await redis.lpush(REDIS_LIST_KEY, line);
       await redis.ltrim(REDIS_LIST_KEY, 0, MAX_MESSAGES - 1);
       return { ok: true };
@@ -90,25 +135,20 @@ export async function saveContactMessage(
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      const fp = inboxFilePath();
-      await fs.mkdir(path.dirname(fp), { recursive: true });
-      await fs.appendFile(fp, JSON.stringify(record) + '\n', 'utf8');
-      return { ok: true };
-    } catch {
-      return { ok: false, error: '無法寫入本機測試檔案，請檢查專案目錄權限。' };
-    }
+  try {
+    const merged = await loadMessagesFromFile();
+    merged.unshift(record);
+    await writeMessagesToFile(merged);
+    return { ok: true };
+  } catch {
+    return {
+      ok: false,
+      error: '無法寫入留言檔案，請確認主機對專案目錄下 data／ 資料夾有讀寫權限。',
+    };
   }
-
-  return {
-    ok: false,
-    error:
-      '正式環境尚未設定留言儲存：請在 Vercel 等部署環境設定 Upstash Redis（UPSTASH_REDIS_REST_URL／UPSTASH_REDIS_REST_TOKEN），與管理密碼所用相同即可。',
-  };
 }
 
-// 後台列表用：由新到舊讀取留言（Redis 已為新在前；檔案則依時間排序）
+// 後台列表用：由新到舊讀取留言
 export async function listContactMessages(): Promise<StoredContactMessage[]> {
   if (hasRedisEnv()) {
     try {
@@ -127,36 +167,26 @@ export async function listContactMessages(): Promise<StoredContactMessage[]> {
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    const fp = inboxFilePath();
-    try {
-      const text = await fs.readFile(fp, 'utf8');
-      const items: StoredContactMessage[] = [];
-      for (const line of text.split('\n')) {
-        if (!line.trim()) continue;
-        const p = parseStoredLine(line);
-        if (p) items.push(p);
-      }
-      items.sort((a, b) => (a.receivedAt < b.receivedAt ? 1 : -1));
-      return items;
-    } catch {
-      return [];
-    }
-  }
-
-  return [];
+  return loadMessagesFromFile();
 }
 
-// 將完整列表寫回（順序為新到舊；編輯／刪除後重建 Redis 或覆寫本機檔）
+// 將完整列表寫回（順序為新到舊；編輯／刪除後重建）
 async function persistFullInboxList(
   newestFirst: StoredContactMessage[]
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const trimmed = newestFirst.slice(0, MAX_MESSAGES);
+  if (vercelProductionWithoutRedisBlocked()) {
+    return {
+      ok: false,
+      error:
+        '此部署環境無法使用檔案收件匣：請設定 Upstash Redis，或將網站改為自主機房部署。',
+    };
+  }
 
   if (hasRedisEnv()) {
     try {
       const { Redis } = await import('@upstash/redis');
       const redis = Redis.fromEnv();
+      const trimmed = newestFirst.slice(0, MAX_MESSAGES);
       await redis.del(REDIS_LIST_KEY);
       if (trimmed.length === 0) return { ok: true };
       for (let i = trimmed.length - 1; i >= 0; i--) {
@@ -168,23 +198,12 @@ async function persistFullInboxList(
     }
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      const fp = inboxFilePath();
-      await fs.mkdir(path.dirname(fp), { recursive: true });
-      const body =
-        trimmed.length === 0 ? '' : trimmed.map((x) => JSON.stringify(x)).join('\n') + '\n';
-      await fs.writeFile(fp, body, 'utf8');
-      return { ok: true };
-    } catch {
-      return { ok: false, error: '無法寫入本機留言檔案。' };
-    }
+  try {
+    await writeMessagesToFile(newestFirst);
+    return { ok: true };
+  } catch {
+    return { ok: false, error: '無法寫入本機留言檔案，請確認目錄權限。' };
   }
-
-  return {
-    ok: false,
-    error: '正式環境須設定 Upstash Redis 才能修改或刪除留言。',
-  };
 }
 
 // 管理員刪除一則留言
@@ -239,7 +258,13 @@ export async function updateContactMessage(
   return { ok: true, item: next };
 }
 
-// 供 API 判斷正式環境是否具備讀取收件匣能力（無 Redis 時後台列表無法對應正式資料）
+// 供 API 判斷正式環境是否具備收件匣後端（Redis 或非 Vercel 之檔案）
 export function canListContactMessagesInProduction(): boolean {
-  return hasRedisEnv();
+  if (hasRedisEnv()) return true;
+  if (process.env.NODE_ENV === 'production' && isVercelRuntime()) return false;
+  return true;
 }
+
+// Vercel 正式環境且未設定 Redis 時 API 共用說明（自主機房無 VERCEL 環境變數時改純檔案）
+export const CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE =
+  '此為 Vercel 正式環境且未設定 Upstash Redis，無持久硬碟可使用站內留言。請設定 UPSTASH_REDIS_REST_URL／UPSTASH_REDIS_REST_TOKEN，或改為自主機房並以 data/contact-inbox.jsonl 儲存。';

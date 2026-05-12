@@ -76,7 +76,7 @@ export function parseAndValidateContactPayload(
 // 組成給管理員閱讀的純文字內容（不要用 HTML，降低郵件用戶端 XSS 風險）
 export function formatContactPlainText(data: ContactPayload): string {
   const lines = [
-    '瑀過天泰關懷協會｜官網聯絡表單',
+    '瑀過天秦關懷協會｜官網聯絡表單',
     '',
     `諮詢主旨：${data.subject}`,
     `姓名：${data.name}`,

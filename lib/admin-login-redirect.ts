@@ -4,6 +4,8 @@ export const ALLOWED_LOGIN_NEXT = [
   '/gallery/manage',
   '/products/manage',
   '/news/manage',
+  '/hero/manage',
+  '/mission/manage',
   '/contact/manage',
   '/admin/change-password',
 ] as const;

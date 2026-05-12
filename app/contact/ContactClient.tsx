@@ -5,8 +5,7 @@ import { useState } from 'react';
 import {
   SITE_LINE_OFFICIAL_ID,
   SITE_LINE_OFFICIAL_URL,
-  SITE_MAIN_PHONE_HREF,
-  SITE_MAIN_PHONE_LABEL,
+  SITE_PHONES,
   SITE_SERVICE_LOCATIONS,
 } from '@/lib/site-contact';
 
@@ -181,7 +180,7 @@ export default function ContactClient() {
                   </div>
                   <div>
                     <div className="font-bold text-gray-800 text-sm group-hover:text-blue-600 transition-colors">Facebook 粉絲頁</div>
-                    <div className="text-xs text-gray-500 mt-0.5">瑀過天泰關懷協會</div>
+                    <div className="text-xs text-gray-500 mt-0.5">瑀過天秦關懷協會</div>
                     <div className="text-xs text-blue-500 mt-1">點擊前往 →</div>
                   </div>
                 </a>
@@ -211,9 +210,8 @@ export default function ContactClient() {
                   </div>
                 </a>
 
-                {/* 聯絡電話（點擊可於手機撥號） */}
-                <a
-                  href={SITE_MAIN_PHONE_HREF}
+                {/* 聯絡電話（每支號碼可獨立點擊撥號） */}
+                <div
                   className="flex items-start gap-4 p-4 bg-white rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md group"
                   style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
                 >
@@ -227,10 +225,21 @@ export default function ContactClient() {
                   </div>
                   <div>
                     <div className="font-bold text-gray-800 text-sm group-hover:text-orange-600 transition-colors">聯絡電話</div>
-                    <div className="text-xs text-gray-600 mt-0.5 font-medium">{SITE_MAIN_PHONE_LABEL}</div>
-                    <div className="text-xs text-orange-500 mt-1">點擊撥號 →</div>
+                    <div className="text-xs text-gray-600 mt-1.5 font-medium space-y-1">
+                      {SITE_PHONES.map((phone) => (
+                        <div key={phone.href}>
+                          <a
+                            href={phone.href}
+                            className="hover:text-orange-600 underline-offset-2 hover:underline"
+                          >
+                            {phone.label}
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-xs text-orange-500 mt-1">點擊號碼即可撥號 →</div>
                   </div>
-                </a>
+                </div>
 
                 {/* 服務據點（各地圖另開分頁） */}
                 <div
@@ -321,7 +330,7 @@ export default function ContactClient() {
                   </h3>
                   <p className="text-gray-500 max-w-sm leading-relaxed">
                     我們已收到您的留言，將於 1-2 個工作日內回覆您。<br />
-                    感謝您對瑀過天泰的支持與關注！
+                    感謝您對瑀過天秦的支持與關注！
                   </p>
                   <button
                     onClick={() => {

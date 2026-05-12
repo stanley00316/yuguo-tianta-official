@@ -14,14 +14,14 @@ export const viewport: Viewport = {
 // 整站 SEO 基本設定
 export const metadata: Metadata = {
   title: {
-    default: "瑀過天泰關懷協會 | 試衣間身心障礙工坊",
-    template: "%s | 瑀過天泰關懷協會",
+    default: "瑀過天秦關懷協會 | 試衣間身心障礙工坊",
+    template: "%s | 瑀過天秦關懷協會",
   },
   description:
-    "社團法人高雄市瑀過天泰關懷協會，試衣間身心障礙工坊。提供身心障礙者職業訓練與就業機會，用溫暖陪伴，讓每個人都被看見。",
-  keywords: ["瑀過天泰", "身心障礙", "公益", "高雄", "工坊", "試衣間", "關懷協會"],
+    "社團法人高雄市瑀過天秦關懷協會，試衣間身心障礙工坊。提供身心障礙者職業訓練與就業機會，用溫暖陪伴，讓每個人都被看見。",
+  keywords: ["瑀過天秦", "身心障礙", "公益", "高雄", "工坊", "試衣間", "關懷協會"],
   openGraph: {
-    siteName: "瑀過天泰關懷協會",
+    siteName: "瑀過天秦關懷協會",
     locale: "zh_TW",
     type: "website",
   },

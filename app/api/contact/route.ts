@@ -66,7 +66,7 @@ async function sendViaWeb3Forms(
 ): Promise<{ ok: boolean }> {
   const payload: Record<string, string> = {
     access_key: accessKey,
-    subject: `【瑀過天泰官網】${data.subject}`,
+    subject: `【瑀過天秦官網】${data.subject}`,
     from_name: data.name,
     message: formatContactPlainText(data),
   };
@@ -126,7 +126,7 @@ async function sendViaResend(
         from,
         to: [to],
         reply_to: data.email || undefined,
-        subject: `【瑀過天泰官網】${data.subject}｜${data.name}`,
+        subject: `【瑀過天秦官網】${data.subject}｜${data.name}`,
         text,
       }),
     });

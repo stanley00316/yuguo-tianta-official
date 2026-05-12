@@ -44,7 +44,7 @@ export default function HomePage() {
               color: '#1A1A1A',
             }}
           >
-            支持瑀過天泰，讓愛延續
+            支持瑀過天秦，讓愛延續
           </h2>
           <p className="text-gray-500 text-base mb-8 max-w-lg mx-auto leading-relaxed">
             您的每一份支持，都是工坊夥伴繼續前行的力量。

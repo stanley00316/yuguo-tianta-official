@@ -6,15 +6,30 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAdminSession } from '@/hooks/useAdminSession';
 
-// 導覽選單項目定義
-const navItems = [
-  { href: '/', label: '首頁' },
+// 導覽選單項目（labelMobile：僅手機版選單顯示；未設定則沿用 label）
+type NavItem = {
+  href: string;
+  label: string;
+  labelMobile?: string;
+};
+
+// 導覽選單項目定義（桌面版順序：關於我們 → 最新消息 → 活動剪影 → 公益商品）
+const navItems: NavItem[] = [
+  { href: '/', label: '首頁', labelMobile: '官方網站首頁' },
   { href: '/about', label: '關於我們' },
-  { href: '/products', label: '公益商品' },
-  { href: '/gallery', label: '活動剪影' },
   { href: '/news', label: '最新消息' },
+  { href: '/gallery', label: '活動剪影' },
+  { href: '/products', label: '公益商品' },
   { href: '/contact', label: '聯絡我們' },
 ];
+
+// 手機版漢堡選單順序（與桌面不同）：「最新消息」底下接「活動剪影」；「聯絡我們」底下接「關於我們」，再上為捐款 DM 資訊 CTA「捐款支持」（連 /donation）
+const MOBILE_NAV_HREF_ORDER = ['/', '/products', '/news', '/gallery', '/contact', '/about'] as const;
+const navItemsMobile = MOBILE_NAV_HREF_ORDER.map((href) => {
+  const item = navItems.find((n) => n.href === href);
+  if (!item) throw new Error(`Header: 找不到 href=${href} 的導覽項目`);
+  return item;
+});
 
 export default function Header() {
   const pathname = usePathname();
@@ -87,12 +102,12 @@ export default function Header() {
         <div className="container-site">
           <div className="flex items-center justify-between h-18 py-3">
 
-            {/* Logo 區域 */}
-            <Link href="/" className="flex items-center gap-3 group">
+            {/* Logo 區域 — 點擊走 /site-home（與首頁內容相同，對齊整合版 admin-web 路徑） */}
+            <Link href="/site-home" className="flex items-center gap-3 group">
               <div className="relative w-14 h-14 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="瑀過天泰關懷協會 Logo"
+                  alt="瑀過天秦關懷協會 Logo"
                   fill
                   className="object-contain rounded-full transition-transform duration-300 group-hover:scale-105"
                   priority
@@ -107,10 +122,10 @@ export default function Header() {
               <div className="hidden sm:block">
                 <div className="flex items-center gap-2">
                   <div
-                    className="font-extrabold text-lg leading-tight"
+                    className="font-extrabold text-xs sm:text-sm md:text-base leading-snug max-w-[11rem] sm:max-w-[14rem] md:max-w-[20rem]"
                     style={{ fontFamily: "'Nunito', 'Noto Sans TC', sans-serif", color: '#2D2D2D' }}
                   >
-                    瑀過天泰關懷協會
+                    社團法人高雄市瑀過天秦關懷協會
                   </div>
                   {hasNewContact ? (
                     <span
@@ -146,8 +161,9 @@ export default function Header() {
                   href="/gallery/manage"
                   className="nav-link text-sm"
                   style={{ color: '#4A90D9' }}
+                  aria-label="已登入管理者，前往管理後台"
                 >
-                  管理者登入
+                  已登入
                 </Link>
               ) : (
                 <Link
@@ -166,8 +182,9 @@ export default function Header() {
                   href="/gallery/manage"
                   className="text-xs sm:text-sm font-semibold px-2 py-1.5 rounded-lg transition-colors hover:bg-gray-100"
                   style={{ color: '#4A90D9' }}
+                  aria-label="已登入管理者，前往管理後台"
                 >
-                  管理者登入
+                  已登入
                 </Link>
               ) : (
                 <Link
@@ -211,7 +228,7 @@ export default function Header() {
           }`}
         >
           <nav className="container-site py-4 flex flex-col gap-1">
-            {navItems.map((item) => (
+            {navItemsMobile.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -222,12 +239,12 @@ export default function Header() {
                 }`}
                 style={{ fontFamily: "'Noto Sans TC', sans-serif" }}
               >
-                {item.label}
+                {item.labelMobile ?? item.label}
               </Link>
             ))}
             <div className="pt-2 pb-1">
-              <Link href="/contact" className="btn-primary w-full justify-center text-sm">
-                支持我們
+              <Link href="/donation" className="btn-primary w-full justify-center text-sm">
+                捐款支持
               </Link>
             </div>
           </nav>

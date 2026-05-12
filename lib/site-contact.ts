@@ -22,11 +22,22 @@ export const SITE_SERVICE_LOCATIONS: SiteServiceLocation[] = [
   },
 ];
 
-/** 畫面上顯示的電話號碼 */
-export const SITE_MAIN_PHONE_LABEL = '07-9623203';
+// 對外電話集中維護，Footer／聯絡頁共用以避免號碼不同步
 
-/** 點擊撥號用（台灣市話去首碼 0 加國碼 886） */
-export const SITE_MAIN_PHONE_HREF = 'tel:+88679623203';
+const PRIMARY_SITE_PHONE = { label: '07-9623203', href: 'tel:+88679623203' };
+const SECOND_SITE_PHONE = { label: '07-34355636', href: 'tel:+886734355636' };
+
+/** 對外電話（順序即顯示順序） */
+export const SITE_PHONES: readonly { label: string; href: string }[] = [
+  PRIMARY_SITE_PHONE,
+  SECOND_SITE_PHONE,
+] as const;
+
+/** 畫面上顯示的第一支電話（向下相容既有匯入處） */
+export const SITE_MAIN_PHONE_LABEL = PRIMARY_SITE_PHONE.label;
+
+/** 第一支電話之撥號連結 */
+export const SITE_MAIN_PHONE_HREF = PRIMARY_SITE_PHONE.href;
 
 /** LINE 官方帳號 Basic ID（畫面上顯示） */
 export const SITE_LINE_OFFICIAL_ID = '@502zrgxr';

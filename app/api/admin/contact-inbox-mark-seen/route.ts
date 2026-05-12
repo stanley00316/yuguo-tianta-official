@@ -7,6 +7,7 @@ import {
   CONTACT_INBOX_SEEN_MAX_AGE_SEC,
 } from '@/lib/contact-inbox-seen-cookie';
 import {
+  CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE,
   canListContactMessagesInProduction,
   listContactMessages,
 } from '@/lib/contact-inbox-store';
@@ -31,8 +32,7 @@ export async function POST() {
     return NextResponse.json(
       {
         ok: false,
-        error:
-          '正式環境請設定 Upstash Redis（UPSTASH_REDIS_REST_URL／UPSTASH_REDIS_REST_TOKEN）才能讀取站內留言。',
+        error: CONTACT_INBOX_VERCEL_BLOCKED_MESSAGE,
       },
       { status: 503 }
     );

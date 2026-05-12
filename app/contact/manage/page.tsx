@@ -153,8 +153,9 @@ export default function ContactManagePage() {
           </h1>
           <p className="text-gray-600 text-sm max-w-2xl mx-auto mb-4">
             訪客於「聯絡我們」送出的留言會出現在此處；可<strong>編輯</strong>內容或<strong>刪除</strong>。
-            正式環境請設定 <strong>Upstash Redis</strong>；本機開發時資料在{' '}
-            <code className="text-xs bg-gray-100 px-1 rounded">data/contact-inbox.jsonl</code>。
+            資料來源：已設定 Upstash 時為 Redis；否則為伺服器上{' '}
+            <code className="text-xs bg-gray-100 px-1 rounded">data/contact-inbox.jsonl</code>
+            （自主機房請確保此檔可持久化並定期備份；Vercel 正式環境未設 Redis 則無法使用檔案儲存）。
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/contact" className="btn-secondary text-sm py-2 px-4">
